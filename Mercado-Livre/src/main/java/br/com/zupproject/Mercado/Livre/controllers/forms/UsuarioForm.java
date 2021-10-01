@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import br.com.zupproject.Mercado.Livre.customizations.UniqueValue;
 import br.com.zupproject.Mercado.Livre.entidades.Usuario;
 
 public class UsuarioForm {
@@ -14,6 +15,7 @@ public class UsuarioForm {
 
 	@NotBlank
 	@Email
+	@UniqueValue(domainClass = Usuario.class, fieldName = "email")
 	private String email;
 	@NotBlank
 	@Size(min = 6)
