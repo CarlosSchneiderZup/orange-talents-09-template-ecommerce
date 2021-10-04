@@ -21,10 +21,6 @@ public class UsuarioForm {
 	@Size(min = 6)
 	private String senha;
 
-	public BCryptPasswordEncoder getEncoder() {
-		return encoder;
-	}
-
 	public String getEmail() {
 		return email;
 	}
