@@ -18,12 +18,12 @@ public class CategoriaController {
 
 	@Autowired
 	private CategoriaRepository categoriaRepository;
-	
+
 	@PostMapping
 	public void cadastraCategoria(@RequestBody @Valid CategoriaForm form) {
-		
+
 		Categoria categoria = form.converter(categoriaRepository);
 		categoriaRepository.save(categoria);
-		
+
 	}
 }

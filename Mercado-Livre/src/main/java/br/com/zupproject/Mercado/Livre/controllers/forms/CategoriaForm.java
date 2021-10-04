@@ -26,12 +26,13 @@ public class CategoriaForm {
 	}
 
 	public Categoria converter(CategoriaRepository categoriaRepository) {
-		
-		Optional<Categoria> categoria = categoriaRepository.findById(idCategoriaMae != null ? idCategoriaMae : 0);
-		
-		if(categoria.isPresent()) {
+
+		if (idCategoriaMae != null) {
+
+			Optional<Categoria> categoria = categoriaRepository.findById(idCategoriaMae);
+
 			return new Categoria(nome, categoria.get());
-		} 
+		}
 		return new Categoria(nome, null);
 	}
 }
