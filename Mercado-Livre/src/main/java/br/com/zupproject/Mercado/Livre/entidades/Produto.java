@@ -33,13 +33,15 @@ public class Produto {
 
 	@ManyToOne
 	private Categoria categoria;
+	@ManyToOne
+	private Usuario donoProduto;
 	private LocalDateTime horaCadastro = LocalDateTime.now();
 
 	public Produto() {
 	}
 
 	public Produto(String nome, BigDecimal valor, Integer quantidade, Map<String, String> caracteristicas,
-			String descricao, Categoria categoria) {
+			String descricao, Categoria categoria, Usuario donoProduto) {
 		super();
 		this.nome = nome;
 		this.valor = valor;
@@ -47,6 +49,7 @@ public class Produto {
 		this.caracteristicas = caracteristicas;
 		this.descricao = descricao;
 		this.categoria = categoria;
+		this.donoProduto = donoProduto;
 	}
 
 }
