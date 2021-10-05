@@ -46,6 +46,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.POST, "/auth").permitAll()
         .antMatchers(HttpMethod.POST, "/usuarios").authenticated()
         .antMatchers(HttpMethod.POST, "/categorias").authenticated()
+        .antMatchers(HttpMethod.POST, "/produtos").authenticated()
         .and()
         .csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
