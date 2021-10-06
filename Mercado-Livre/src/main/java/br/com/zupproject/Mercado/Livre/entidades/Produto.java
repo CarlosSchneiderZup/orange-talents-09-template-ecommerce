@@ -37,7 +37,7 @@ public class Produto {
 
 	@OneToMany(mappedBy = "produtoAlvo")
 	private List<Opiniao> opinioes = new ArrayList<>();
-	
+
 	@Column(nullable = false, length = 1000)
 	private String descricao;
 
@@ -67,6 +67,14 @@ public class Produto {
 				.collect(Collectors.toList());
 
 		this.imagensDoProduto.addAll(imagens);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public Usuario getDonoProduto() {
+		return donoProduto;
 	}
 
 	public boolean ehDono(Usuario usuario) {
