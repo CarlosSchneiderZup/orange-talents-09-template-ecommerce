@@ -2,9 +2,13 @@ package br.com.zupproject.Mercado.Livre.entidades;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -12,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Produto {
@@ -27,6 +32,8 @@ public class Produto {
 	private Integer quantidade;
 	@ElementCollection
 	private Map<String, String> caracteristicas = new HashMap<>();
+	@OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+	private List<ImagemProduto> imagensDoProduto = new ArrayList<>();
 
 	@Column(nullable = false, length = 1000)
 	private String descricao;
@@ -50,6 +57,17 @@ public class Produto {
 		this.descricao = descricao;
 		this.categoria = categoria;
 		this.donoProduto = donoProduto;
+	}
+
+	public void associaLinks(List<String> linksImagem) {
+		List<ImagemProduto> imagens = linksImagem.stream().map(link -> new ImagemProduto(this, link))
+				.collect(Collectors.toList());
+
+		this.imagensDoProduto.addAll(imagens);
+	}
+
+	public boolean ehDono(Usuario usuario) {
+		return this.donoProduto.equals(usuario);
 	}
 
 }
