@@ -12,7 +12,7 @@ public class MockServicoUpload {
 	public List<String> enviaImagens(java.util.List<MultipartFile> imagens) {
 		List<String> links = new ArrayList<>();
 		for(MultipartFile imagem : imagens) {
-			links.add("www.realWebsite." + imagem.getName() + imagem.getSize() + ".com");
+			links.add("http://www.realWebsite/" + imagem.getName() + imagem.getSize() + ".com");
 		}
 		return links;
 	}

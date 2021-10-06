@@ -49,7 +49,7 @@ public class ProdutoController {
 	
 	@PostMapping(value = "/img/{id}")
 	public void cadastraImagem(@PathVariable Long id, @Valid ImagemProdutoForm form) {
-		Optional<Usuario> usuarioLogado = usuarioRepository.findById(2L);
+		Optional<Usuario> usuarioLogado = usuarioRepository.findById(1L);
 		Optional<Produto> produto = produtoRepository.findById(id);
 		if(produto.isPresent()) {
 			Produto oProduto = produto.get();
@@ -57,6 +57,8 @@ public class ProdutoController {
 			if(usuarioLogado.isPresent() && oProduto.ehDono(usuarioLogado.get())) {
 				List<String> linksImagem = mockServicoUpload.enviaImagens(form.getImagens());
 				oProduto.associaLinks(linksImagem);
+				
+				produtoRepository.save(oProduto);
 			} else {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 			}
