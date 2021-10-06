@@ -35,6 +35,9 @@ public class Produto {
 	@OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
 	private List<ImagemProduto> imagensDoProduto = new ArrayList<>();
 
+	@OneToMany(mappedBy = "produtoAlvo")
+	private List<Opiniao> opinioes = new ArrayList<>();
+	
 	@Column(nullable = false, length = 1000)
 	private String descricao;
 
