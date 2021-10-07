@@ -1,7 +1,6 @@
-package br.com.zupproject.Mercado.Livre.customizations;
+package br.com.zupproject.Mercado.Livre.commons.validators;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.util.Assert;
 
-public class IdFinderValidator implements ConstraintValidator<IdFinder, Object> {
+public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Object> {
 
 	private String domainAttribute;
 	private Class<?> klass;
@@ -19,7 +18,7 @@ public class IdFinderValidator implements ConstraintValidator<IdFinder, Object> 
 	private EntityManager manager;
 	
 	@Override
-	public void initialize(IdFinder params) {
+	public void initialize(UniqueValue params) {
 		domainAttribute = params.fieldName();
 		klass = params.domainClass();
 	}
@@ -27,17 +26,13 @@ public class IdFinderValidator implements ConstraintValidator<IdFinder, Object> 
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 
-		if(Objects.isNull(value)) {
-			return true;
-		}
-		
 		Query query = manager.createQuery("select 1 from " + klass.getName() + " where " + domainAttribute + "=:value");
 		query.setParameter("value", value);
 		
 		List<?> list = query.getResultList();
-		Assert.isTrue(list.size() <=1, "Não foi encontrado o valor para o atributo desejado: " + value);
+		Assert.state(list.size() <= 1, "Foi encontrado mais de um " + klass + " com o atributo " + domainAttribute + " = " + value);
 		
-		return !list.isEmpty();
+		return list.isEmpty();
 	}
 
 }

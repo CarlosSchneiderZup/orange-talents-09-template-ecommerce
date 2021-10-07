@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotBlank;
 
-import br.com.zupproject.Mercado.Livre.customizations.IdFinder;
-import br.com.zupproject.Mercado.Livre.customizations.UniqueValue;
+import br.com.zupproject.Mercado.Livre.commons.validators.IdFinder;
+import br.com.zupproject.Mercado.Livre.commons.validators.UniqueValue;
 import br.com.zupproject.Mercado.Livre.entidades.Categoria;
 import br.com.zupproject.Mercado.Livre.repositorios.CategoriaRepository;
 

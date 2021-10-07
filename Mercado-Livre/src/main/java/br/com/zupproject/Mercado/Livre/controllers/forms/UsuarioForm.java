@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import br.com.zupproject.Mercado.Livre.customizations.UniqueValue;
+import br.com.zupproject.Mercado.Livre.commons.validators.UniqueValue;
 import br.com.zupproject.Mercado.Livre.entidades.Usuario;
 
 public class UsuarioForm {

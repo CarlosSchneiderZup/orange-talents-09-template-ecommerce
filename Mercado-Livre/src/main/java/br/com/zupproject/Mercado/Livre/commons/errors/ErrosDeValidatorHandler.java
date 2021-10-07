@@ -1,4 +1,4 @@
-package br.com.zupproject.Mercado.Livre.customizations;
+package br.com.zupproject.Mercado.Livre.commons.errors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ public class ErrosDeValidatorHandler {
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public List<ErroPadrao> tratamentoErrosArgumento(MethodArgumentNotValidException exception) {
+		
 		List<ErroPadrao> errosDto = new ArrayList<>();
 		
 		List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();

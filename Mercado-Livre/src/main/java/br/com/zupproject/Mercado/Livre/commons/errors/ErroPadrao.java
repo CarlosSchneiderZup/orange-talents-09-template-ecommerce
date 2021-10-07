@@ -1,4 +1,4 @@
-package br.com.zupproject.Mercado.Livre.customizations;
+package br.com.zupproject.Mercado.Livre.commons.errors;
 
 public class ErroPadrao {
 

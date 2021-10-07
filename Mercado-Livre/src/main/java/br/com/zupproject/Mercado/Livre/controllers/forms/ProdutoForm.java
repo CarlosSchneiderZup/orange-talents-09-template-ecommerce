@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import br.com.zupproject.Mercado.Livre.customizations.IdFinder;
+import br.com.zupproject.Mercado.Livre.commons.validators.IdFinder;
 import br.com.zupproject.Mercado.Livre.entidades.Categoria;
 import br.com.zupproject.Mercado.Livre.entidades.Produto;
 import br.com.zupproject.Mercado.Livre.entidades.Usuario;
