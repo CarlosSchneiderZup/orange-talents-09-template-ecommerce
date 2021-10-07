@@ -26,9 +26,11 @@ public class ImagemProduto {
 	public ImagemProduto() {}
 	
 	public ImagemProduto(Produto produto, String link) {
-		super();
 		this.produto = produto;
 		this.link = link;
 	}
 
+	public String getLink() {
+		return link;
+	}
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,6 +38,8 @@ public class Produto {
 
 	@OneToMany(mappedBy = "produtoAlvo")
 	private List<Opiniao> opinioes = new ArrayList<>();
+	@OneToMany(mappedBy = "produto")
+	private List<Pergunta> perguntas = new ArrayList<>();
 
 	@Column(nullable = false, length = 1000)
 	private String descricao;
@@ -69,16 +72,66 @@ public class Produto {
 		this.imagensDoProduto.addAll(imagens);
 	}
 
+	public boolean ehDono(Usuario usuario) {
+		return this.donoProduto.equals(usuario);
+	}
+	
+	public Map<String, String> geraDetalhesAvaliacao() {
+		Map<String, String> detalhes = new HashMap<>();
+		
+		Integer numeroAvaliacoes = opinioes.size();
+		Double media =  1D * opinioes.stream().
+				flatMapToInt(opiniao -> IntStream.of(opiniao.getAvaliacao())).sum()/numeroAvaliacoes;
+		detalhes.put("totalAvaliacoes", numeroAvaliacoes.toString());
+		detalhes.put("mediaAvaliacoes", media.toString());
+		return detalhes;
+	}
+
 	public Long getId() {
 		return id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public Map<String, String> getCaracteristicas() {
+		return caracteristicas;
+	}
+
+	public List<ImagemProduto> getImagensDoProduto() {
+		return imagensDoProduto;
+	}
+
+	public List<Opiniao> getOpinioes() {
+		return opinioes;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
 	}
 
 	public Usuario getDonoProduto() {
 		return donoProduto;
 	}
 
-	public boolean ehDono(Usuario usuario) {
-		return this.donoProduto.equals(usuario);
+	public LocalDateTime getHoraCadastro() {
+		return horaCadastro;
 	}
 
+	public List<Pergunta> getPerguntas() {
+		return perguntas;
+	}
 }

@@ -42,4 +42,16 @@ public class Opiniao {
 		this.usuario = usuario;
 	}
 
+	public String getTitulo() {
+		return titulo;
+	}
+
+	public Integer getAvaliacao() {
+		return avaliacao;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
 }

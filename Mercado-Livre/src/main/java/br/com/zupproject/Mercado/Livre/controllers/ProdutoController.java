@@ -7,6 +7,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.com.zupproject.Mercado.Livre.controllers.dtos.ProdutoDto;
 import br.com.zupproject.Mercado.Livre.controllers.forms.ImagemProdutoForm;
 import br.com.zupproject.Mercado.Livre.controllers.forms.ProdutoForm;
 import br.com.zupproject.Mercado.Livre.entidades.Produto;
@@ -65,7 +68,16 @@ public class ProdutoController {
 		} else {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<ProdutoDto> encontraProdutoPorId(@PathVariable Long id) {
 		
+		Optional<Produto> produto = produtoRepository.findById(id);
 		
+		if(produto.isPresent()) {
+			return ResponseEntity.ok(new ProdutoDto(produto.get()));
+		}
+		return ResponseEntity.notFound().build();
 	}
 }
