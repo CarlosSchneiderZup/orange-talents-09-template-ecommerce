@@ -75,16 +75,29 @@ public class Produto {
 	public boolean ehDono(Usuario usuario) {
 		return this.donoProduto.equals(usuario);
 	}
-	
+
 	public Map<String, String> geraDetalhesAvaliacao() {
 		Map<String, String> detalhes = new HashMap<>();
-		
+
 		Integer numeroAvaliacoes = opinioes.size();
-		Double media =  1D * opinioes.stream().
-				flatMapToInt(opiniao -> IntStream.of(opiniao.getAvaliacao())).sum()/numeroAvaliacoes;
+		Double media = opinioes.stream().flatMapToInt(opiniao -> IntStream.of(opiniao.getAvaliacao())).average()
+				.orElse(0.0);
 		detalhes.put("totalAvaliacoes", numeroAvaliacoes.toString());
 		detalhes.put("mediaAvaliacoes", media.toString());
 		return detalhes;
+	}
+
+	public boolean existeEstoqueParaCompra(Integer quantidadeDesejada) {
+
+		if (quantidade <= 0) {
+			return false;
+		}
+
+		return quantidadeDesejada <= quantidade;
+	}
+
+	public void abateEstoque(Integer quantidadeComprada) {
+		quantidade = quantidade - quantidadeComprada;
 	}
 
 	public Long getId() {

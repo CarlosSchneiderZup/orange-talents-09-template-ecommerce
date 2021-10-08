@@ -46,7 +46,7 @@ public class PerguntaController {
 		if (usuarioLogado.isPresent() && produto.isPresent()) {
 			Pergunta pergunta = form.converter(usuarioLogado.get(), produto.get());
 			perguntaRepository.save(pergunta);
-			mailer.enviaEmail(produto.get());
+			mailer.enviaEmailPergunta(produto.get());
 			
 		} else {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
