@@ -20,4 +20,21 @@ public class MockServicoEmail {
 		System.out.println("Informando o inicio do processo de compra para este produto.");
 	}
 
+	public void enviaEmailPagamentoAceito(String notaFiscal, Long id, String nome, String email) {
+		System.out.println("Email enviado para o destino: " + email);
+		System.out.println("Referente ao produto de id " + id);
+		System.out.println("Informando o pagamento para o seguinte produto: " + nome);
+		System.out.println("Foi aceito.");
+		System.out.println("Nota fiscal: " + notaFiscal );
+	}
+
+	public void enviaEmailPagamentoRecusado(Long id, String nome, String servicoPagamento, String email) {
+		System.out.println("Email enviado para o destino: " + email);
+		System.out.println("Referente ao produto de id " + id);
+		System.out.println("Informando o pagamento para o seguinte produto: " + nome);
+		System.out.println("Foi recusado.");
+		System.out.println("Link para geração de uma nova tentativa");
+		System.out.println("https://www." + servicoPagamento + ".com.br/tentativa/" + id);
+	}
+
 }

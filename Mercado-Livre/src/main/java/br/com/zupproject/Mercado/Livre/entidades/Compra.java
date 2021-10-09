@@ -2,6 +2,8 @@ package br.com.zupproject.Mercado.Livre.entidades;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import br.com.zupproject.Mercado.Livre.entidades.enums.ServicoPagamento;
 import br.com.zupproject.Mercado.Livre.entidades.enums.StatusCompra;
+import br.com.zupproject.Mercado.Livre.entidades.enums.StatusPagamento;
 
 @Entity
 public class Compra {
@@ -36,6 +40,8 @@ public class Compra {
 	private Usuario usuario;
 	@ManyToOne(optional = false)
 	private Produto produto;
+	@OneToMany(mappedBy = "compra")
+	private List<Pagamento> pagamentos = new ArrayList<>();
 
 	public Compra() {
 	}
@@ -64,5 +70,26 @@ public class Compra {
 
 	public Integer getQuantidade() {
 		return quantidade;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public boolean jaPossuiPagamentoDeSucesso() {
+
+		if (pagamentos.isEmpty()) {
+			return false;
+		}
+		for (Pagamento pagamento : pagamentos) {
+			if (pagamento.getStatusPagamento().equals(StatusPagamento.SUCESSO)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void alteraStatusPagamentoParaPago() {
+		statusCompra = StatusCompra.PAGA;
 	}
 }

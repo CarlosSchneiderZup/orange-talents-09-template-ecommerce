@@ -63,7 +63,7 @@ public class CompraController {
 			}
 		}
 		BindException bindException = new BindException(form, "Nova compra");
-		bindException.reject(null, "Não foi possivel realizar esta compra");
+		bindException.reject(null, "Não foi possivel realizar esta compra; quantidade maior que o estoque");
 		throw bindException;
 	}
 }
