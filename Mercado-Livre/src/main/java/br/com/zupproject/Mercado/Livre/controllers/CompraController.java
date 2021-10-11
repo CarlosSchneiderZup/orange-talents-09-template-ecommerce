@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.zupproject.Mercado.Livre.commons.exceptions.EstoqueInvalidoException;
 import br.com.zupproject.Mercado.Livre.controllers.forms.CompraForm;
 import br.com.zupproject.Mercado.Livre.entidades.Compra;
 import br.com.zupproject.Mercado.Livre.entidades.Produto;
@@ -41,8 +41,7 @@ public class CompraController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.FOUND)
-	public String cadastraCompra(@RequestBody @Valid CompraForm form, UriComponentsBuilder builder)
-			throws BindException {
+	public String cadastraCompra(@RequestBody @Valid CompraForm form, UriComponentsBuilder builder) {
 		Optional<Usuario> usuarioLogado = usuarioRepository.findById(1L);
 
 		if (usuarioLogado.isPresent()) {
@@ -62,8 +61,6 @@ public class CompraController {
 				return servicoPagamento + ".com?buyerId=" + compra.getId() + "&redirectUrl=" + retorno;
 			}
 		}
-		BindException bindException = new BindException(form, "Nova compra");
-		bindException.reject(null, "Não foi possivel realizar esta compra; quantidade maior que o estoque");
-		throw bindException;
+		throw new EstoqueInvalidoException("Não há estoque suficiente para realizar esta compra.");
 	}
 }

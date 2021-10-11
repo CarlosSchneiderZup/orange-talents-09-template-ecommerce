@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import br.com.zupproject.Mercado.Livre.commons.exceptions.EstoqueInvalidoException;
+import br.com.zupproject.Mercado.Livre.commons.exceptions.PagamentoInvalidoException;
+
 @RestControllerAdvice
-public class ErrosDeValidatorHandler {
+public class ExcecaoHandler {
 
 	@Autowired
 	private MessageSource messageSource;
@@ -33,5 +36,17 @@ public class ErrosDeValidatorHandler {
 		});
 		
 		return errosDto;
+	}
+	
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(EstoqueInvalidoException.class)
+	public ErroPadrao tratamentoErroEstoqueInvalido(EstoqueInvalidoException exception) {
+		return new ErroPadrao("estoque", exception.getMessage());
+	}
+	
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(PagamentoInvalidoException.class)
+	public ErroPadrao tratamentoErroEstoqueInvalido(PagamentoInvalidoException exception) {
+		return new ErroPadrao("pagamento", exception.getMessage());
 	}
 }
