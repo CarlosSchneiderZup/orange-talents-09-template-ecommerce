@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,14 +41,18 @@ public class PerguntaController {
 	private MockServicoEmail mailer;
 
 	@PostMapping(value = "/{id}")
-	public void cadastraPergunta(@RequestBody @Valid PerguntaForm form, @PathVariable Long id) {
-		Optional<Usuario> usuarioLogado = usuarioRepository.findById(1L);
+	public void cadastraPergunta(@RequestBody @Valid PerguntaForm form, @PathVariable Long id, @AuthenticationPrincipal UserDetails usuario) {
+		
+		Optional<Usuario> usuarioLogado = usuarioRepository.findByEmail(usuario.getUsername());
 		Optional<Produto> produto = produtoRepository.findById(id);
 
-		if (usuarioLogado.isPresent() && produto.isPresent()) {
+		if (produto.isPresent()) {
 			Pergunta pergunta = form.converter(usuarioLogado.get(), produto.get());
 			perguntaRepository.save(pergunta);
-			mailer.enviaEmailPergunta(produto.get());
+			
+			String email = produto.get().getDonoProduto().getUsername();
+			Long idProduto = produto.get().getId();
+			mailer.enviaEmailPergunta(email, idProduto);
 			
 		} else {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

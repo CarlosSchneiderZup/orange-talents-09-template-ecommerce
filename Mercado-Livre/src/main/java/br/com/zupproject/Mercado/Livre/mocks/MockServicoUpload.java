@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class MockServicoUpload {
 
-	public List<String> enviaImagens(java.util.List<MultipartFile> imagens) {
+	public List<String> enviaImagens(List<MultipartFile> imagens) {
 		List<String> links = new ArrayList<>();
 		for(MultipartFile imagem : imagens) {
 			links.add("http://www.realWebsite/" + imagem.getName() + imagem.getSize() + ".com");

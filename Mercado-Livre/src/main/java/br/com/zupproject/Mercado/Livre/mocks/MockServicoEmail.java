@@ -6,13 +6,12 @@ import br.com.zupproject.Mercado.Livre.entidades.Produto;
 
 @Component
 public class MockServicoEmail {
-	
-	public void enviaEmailPergunta(Produto produto) {
-		String email = produto.getDonoProduto().getUsername();
+
+	public void enviaEmailPergunta(String email, Long idProduto) {
 		System.out.println("Email enviado para o destino: " + email);
-		System.out.println("Referente ao produto de id " + produto.getId());
+		System.out.println("Referente ao produto de id " + idProduto);
 	}
-	
+
 	public void enviaEmailIntencaoCompra(Produto produto) {
 		String email = produto.getDonoProduto().getUsername();
 		System.out.println("Email enviado para o destino: " + email);

@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,21 +45,21 @@ public class ProdutoController {
 	private MockServicoUpload mockServicoUpload;
 	
 	@PostMapping
-	public void cadastraProduto(@RequestBody @Valid ProdutoForm form) {
-		Optional<Usuario> usuarioLogado = usuarioRepository.findById(1L);
+	public void cadastraProduto(@RequestBody @Valid ProdutoForm form, @AuthenticationPrincipal UserDetails usuario) {
+		Optional<Usuario> usuarioLogado = usuarioRepository.findByEmail(usuario.getUsername());
 		
 		Produto produto = form.converter(categoriaRepository, usuarioLogado.get());
 		produtoRepository.save(produto);
 	}
 	
 	@PostMapping(value = "/img/{id}")
-	public void cadastraImagem(@PathVariable Long id, @Valid ImagemProdutoForm form) {
-		Optional<Usuario> usuarioLogado = usuarioRepository.findById(1L);
+	public void cadastraImagem(@PathVariable Long id, @Valid ImagemProdutoForm form, @AuthenticationPrincipal UserDetails usuario) {
+		Optional<Usuario> usuarioLogado = usuarioRepository.findByEmail(usuario.getUsername());
 		Optional<Produto> produto = produtoRepository.findById(id);
 		if(produto.isPresent()) {
 			Produto oProduto = produto.get();
 			
-			if(usuarioLogado.isPresent() && oProduto.ehDono(usuarioLogado.get())) {
+			if(oProduto.ehDono(usuarioLogado.get())) {
 				List<String> linksImagem = mockServicoUpload.enviaImagens(form.getImagens());
 				oProduto.associaLinks(linksImagem);
 				

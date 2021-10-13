@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,25 +43,24 @@ public class CompraController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.FOUND)
-	public String cadastraCompra(@RequestBody @Valid CompraForm form, UriComponentsBuilder builder) {
-		Optional<Usuario> usuarioLogado = usuarioRepository.findById(1L);
+	public String cadastraCompra(@RequestBody @Valid CompraForm form, UriComponentsBuilder builder,
+			@AuthenticationPrincipal UserDetails usuario) {
+		Optional<Usuario> usuarioLogado = usuarioRepository.findByEmail(usuario.getUsername());
 
-		if (usuarioLogado.isPresent()) {
-			Compra compra = form.converter(produtoRepository, usuarioLogado.get());
-			Produto produtoComprado = compra.getProduto();
+		Compra compra = form.converter(produtoRepository, usuarioLogado.get());
+		Produto produtoComprado = compra.getProduto();
 
-			if (produtoComprado.existeEstoqueParaCompra(compra.getQuantidade())) {
+		if (produtoComprado.existeEstoqueParaCompra(compra.getQuantidade())) {
 
-				produtoComprado.abateEstoque(compra.getQuantidade());
-				compraRepository.save(compra);
+			produtoComprado.abateEstoque(compra.getQuantidade());
+			compraRepository.save(compra);
 
-				mailer.enviaEmailIntencaoCompra(produtoComprado);
+			mailer.enviaEmailIntencaoCompra(produtoComprado);
 
-				String servicoPagamento = compra.getServicoPagamento().toString().toLowerCase();
-				String retorno = builder.path(servicoPagamento + "/{id}").buildAndExpand(compra.getId()).toString();
+			String servicoPagamento = compra.getServicoPagamento().toString().toLowerCase();
+			String retorno = builder.path(servicoPagamento + "/{id}").buildAndExpand(compra.getId()).toString();
 
-				return servicoPagamento + ".com?buyerId=" + compra.getId() + "&redirectUrl=" + retorno;
-			}
+			return servicoPagamento + ".com?buyerId=" + compra.getId() + "&redirectUrl=" + retorno;
 		}
 		throw new EstoqueInvalidoException("Não há estoque suficiente para realizar esta compra.");
 	}
