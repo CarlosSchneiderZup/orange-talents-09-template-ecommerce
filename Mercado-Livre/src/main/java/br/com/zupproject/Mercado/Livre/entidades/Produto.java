@@ -50,6 +50,7 @@ public class Produto {
 	private Usuario donoProduto;
 	private LocalDateTime horaCadastro = LocalDateTime.now();
 
+	@Deprecated
 	public Produto() {
 	}
 

@@ -29,6 +29,7 @@ public class Pergunta {
 	private Produto produto;
 	private LocalDateTime horaCriacao = LocalDateTime.now();
 
+	@Deprecated
 	public Pergunta() {
 	}
 

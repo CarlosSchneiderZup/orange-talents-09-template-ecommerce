@@ -23,8 +23,10 @@ public class ImagemProduto {
 	@URL
 	private String link;
 
-	public ImagemProduto() {}
-	
+	@Deprecated
+	public ImagemProduto() {
+	}
+
 	public ImagemProduto(Produto produto, String link) {
 		this.produto = produto;
 		this.link = link;

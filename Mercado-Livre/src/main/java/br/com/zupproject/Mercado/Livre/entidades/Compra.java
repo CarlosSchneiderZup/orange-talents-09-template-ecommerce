@@ -43,6 +43,7 @@ public class Compra {
 	@OneToMany(mappedBy = "compra")
 	private List<Pagamento> pagamentos = new ArrayList<>();
 
+	@Deprecated
 	public Compra() {
 	}
 

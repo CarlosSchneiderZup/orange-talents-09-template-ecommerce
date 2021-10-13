@@ -31,6 +31,7 @@ public class Pagamento {
 	@JoinColumn(name = "produto_id")
 	private Compra compra;
 
+	@Deprecated
 	public Pagamento() {
 
 	}

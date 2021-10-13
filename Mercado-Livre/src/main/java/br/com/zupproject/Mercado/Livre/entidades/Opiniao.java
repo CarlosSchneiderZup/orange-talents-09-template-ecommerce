@@ -30,6 +30,7 @@ public class Opiniao {
 	@ManyToOne(optional = false)
 	private Usuario usuario;
 
+	@Deprecated
 	public Opiniao() {
 	}
 
