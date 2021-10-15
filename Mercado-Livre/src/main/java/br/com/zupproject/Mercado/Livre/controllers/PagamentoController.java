@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.zupproject.Mercado.Livre.commons.exceptions.PagamentoInvalidoException;
-import br.com.zupproject.Mercado.Livre.controllers.forms.pagamentoPagseguroForm;
-import br.com.zupproject.Mercado.Livre.controllers.forms.pagamentoPaypalForm;
+import br.com.zupproject.Mercado.Livre.controllers.forms.PagamentoPagseguroForm;
+import br.com.zupproject.Mercado.Livre.controllers.forms.PagamentoPaypalForm;
 import br.com.zupproject.Mercado.Livre.entidades.Compra;
 import br.com.zupproject.Mercado.Livre.entidades.Pagamento;
 import br.com.zupproject.Mercado.Livre.entidades.enums.StatusPagamento;
@@ -32,7 +32,7 @@ public class PagamentoController {
 	private MockServicoEmail mailer;
 
 	@PostMapping("/paypal")
-	public void cadastraPagamentoPaypal(@RequestBody @Valid pagamentoPaypalForm form) {
+	public void cadastraPagamentoPaypal(@RequestBody @Valid PagamentoPaypalForm form) {
 		Pagamento pagamento = form.converter(compraRepository);
 		Compra compra = pagamento.getCompra();
 
@@ -40,7 +40,7 @@ public class PagamentoController {
 	}
 
 	@PostMapping("/pagseguro")
-	public void cadastraPagamentoPagseguro(@RequestBody @Valid pagamentoPagseguroForm form) {
+	public void cadastraPagamentoPagseguro(@RequestBody @Valid PagamentoPagseguroForm form) {
 		Pagamento pagamento = form.converter(compraRepository);
 		Compra compra = pagamento.getCompra();
 

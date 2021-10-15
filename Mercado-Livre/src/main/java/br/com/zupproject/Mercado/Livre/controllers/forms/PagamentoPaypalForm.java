@@ -13,7 +13,7 @@ import br.com.zupproject.Mercado.Livre.entidades.Pagamento;
 import br.com.zupproject.Mercado.Livre.entidades.enums.StatusPagamento;
 import br.com.zupproject.Mercado.Livre.repositorios.CompraRepository;
 
-public class pagamentoPaypalForm {
+public class PagamentoPaypalForm {
 
 	@NotBlank
 	private String idServico;

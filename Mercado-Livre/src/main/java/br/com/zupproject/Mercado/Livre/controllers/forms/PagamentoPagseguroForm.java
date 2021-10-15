@@ -11,7 +11,7 @@ import br.com.zupproject.Mercado.Livre.entidades.Pagamento;
 import br.com.zupproject.Mercado.Livre.entidades.enums.StatusPagamento;
 import br.com.zupproject.Mercado.Livre.repositorios.CompraRepository;
 
-public class pagamentoPagseguroForm {
+public class PagamentoPagseguroForm {
 
 	@NotBlank
 	private String idServico;
