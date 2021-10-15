@@ -1,25 +1,20 @@
 package br.com.zupproject.Mercado.Livre.controllers;
 
-import javax.validation.Valid;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.com.zupproject.Mercado.Livre.controllers.forms.NotaFiscalForm;
-import br.com.zupproject.Mercado.Livre.controllers.forms.RankingForm;
 
 @RestController
 public class OutrosSistemasController {
 
 	
-	@PostMapping(value = "/notas-fiscais")
-	public String cadastraNotaFiscal(@RequestBody @Valid NotaFiscalForm form) {
-		return "Criando nota fiscal... " + form.toString();
+	@PostMapping(value = "/notas-fiscais/{idCompra}/{idUsuario}")
+	public String cadastraNotaFiscal(@PathVariable Long idCompra, @PathVariable Long idUsuario) {
+		return "Criando nota fiscal da compra de id " + idCompra + ", efetuada pelo usuario de id " + idUsuario;
 	}
 	
-	@PostMapping(value = "/rankings")
-	public String cadastraRanking(@RequestBody @Valid RankingForm form) {
-		return "Gerando pontuação do ranking para -> " + form.toString();
+	@PostMapping(value = "/rankings/{idCompra}/{idVendedor}")
+	public String cadastraRanking(@PathVariable Long idCompra, @PathVariable Long idVendedor) {
+		return "Gerando pontuação do ranking pela compra " + idCompra + " para -> " + idVendedor;
 	}
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.zupproject.Mercado.Livre.commons.exceptions.PagamentoInvalidoException;
+import br.com.zupproject.Mercado.Livre.controllers.feign.GeradorDeRanking;
+import br.com.zupproject.Mercado.Livre.controllers.feign.GeradorNotaFiscal;
 import br.com.zupproject.Mercado.Livre.controllers.forms.PagamentoPagseguroForm;
 import br.com.zupproject.Mercado.Livre.controllers.forms.PagamentoPaypalForm;
 import br.com.zupproject.Mercado.Livre.entidades.Compra;
@@ -30,6 +32,12 @@ public class PagamentoController {
 
 	@Autowired
 	private MockServicoEmail mailer;
+	
+	@Autowired
+	private GeradorNotaFiscal geradorNotaFiscal;
+	
+	@Autowired 
+	private GeradorDeRanking geradorRanking;
 
 	@PostMapping("/paypal")
 	public void cadastraPagamentoPaypal(@RequestBody @Valid PagamentoPaypalForm form) {
@@ -62,6 +70,7 @@ public class PagamentoController {
 			compra.alteraStatusPagamentoParaPago();
 			mailer.enviaEmailPagamentoAceito(compra.getId(), compra.getProduto().getNome(),
 					compra.getUsuario().getUsername());
+			geradorNotaFiscal.enviar(compra.getId(), compra.getUsuario().getId());
 		} else {
 			mailer.enviaEmailPagamentoRecusado(compra.getId(), compra.getProduto().getNome(),
 					compra.getServicoPagamento().toString(), compra.getUsuario().getUsername());
