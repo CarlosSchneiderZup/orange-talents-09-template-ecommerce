@@ -3,8 +3,6 @@ package br.com.zupproject.Mercado.Livre.controllers;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +14,6 @@ import br.com.zupproject.Mercado.Livre.repositorios.UsuarioRepository;
 
 @RestController
 @RequestMapping("/usuarios")
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class UsuarioController {
 
 	@Autowired

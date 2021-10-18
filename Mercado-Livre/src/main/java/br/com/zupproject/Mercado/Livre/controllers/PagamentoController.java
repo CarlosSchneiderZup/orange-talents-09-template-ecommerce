@@ -32,11 +32,11 @@ public class PagamentoController {
 
 	@Autowired
 	private MockServicoEmail mailer;
-	
+
 	@Autowired
 	private GeradorNotaFiscal geradorNotaFiscal;
-	
-	@Autowired 
+
+	@Autowired
 	private GeradorDeRanking geradorRanking;
 
 	@PostMapping("/paypal")
@@ -70,7 +70,10 @@ public class PagamentoController {
 			compra.alteraStatusPagamentoParaPago();
 			mailer.enviaEmailPagamentoAceito(compra.getId(), compra.getProduto().getNome(),
 					compra.getUsuario().getUsername());
+
 			geradorNotaFiscal.enviar(compra.getId(), compra.getUsuario().getId());
+			geradorRanking.enviar(compra.getId(), compra.getUsuario().getId());
+
 		} else {
 			mailer.enviaEmailPagamentoRecusado(compra.getId(), compra.getProduto().getNome(),
 					compra.getServicoPagamento().toString(), compra.getUsuario().getUsername());

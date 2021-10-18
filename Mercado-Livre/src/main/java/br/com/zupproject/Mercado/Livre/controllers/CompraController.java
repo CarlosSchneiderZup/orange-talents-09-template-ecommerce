@@ -60,7 +60,7 @@ public class CompraController {
 			String servicoPagamento = compra.getServicoPagamento().toString().toLowerCase();
 			String retorno = builder.path(servicoPagamento + "/{id}").buildAndExpand(compra.getId()).toString();
 
-			return servicoPagamento + ".com?buyerId=" + compra.getId() + "&redirectUrl=" + retorno;
+			return servicoPagamento + ".com?buyerId=" + compra.getUsuario().getId() + "&redirectUrl=" + retorno;
 		}
 		throw new EstoqueInvalidoException("Não há estoque suficiente para realizar esta compra.");
 	}

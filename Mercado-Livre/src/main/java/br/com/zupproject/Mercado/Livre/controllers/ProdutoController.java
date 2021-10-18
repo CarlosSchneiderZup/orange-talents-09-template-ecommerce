@@ -34,35 +34,36 @@ public class ProdutoController {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
-	
+
 	@Autowired
 	private CategoriaRepository categoriaRepository;
-	
+
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-	
+
 	@Autowired
 	private MockServicoUpload mockServicoUpload;
-	
+
 	@PostMapping
 	public void cadastraProduto(@RequestBody @Valid ProdutoForm form, @AuthenticationPrincipal UserDetails usuario) {
 		Optional<Usuario> usuarioLogado = usuarioRepository.findByEmail(usuario.getUsername());
-		
+
 		Produto produto = form.converter(categoriaRepository, usuarioLogado.get());
 		produtoRepository.save(produto);
 	}
-	
+
 	@PostMapping(value = "/img/{id}")
-	public void cadastraImagem(@PathVariable Long id, @Valid ImagemProdutoForm form, @AuthenticationPrincipal UserDetails usuario) {
+	public void cadastraImagem(@PathVariable Long id, @Valid ImagemProdutoForm form,
+			@AuthenticationPrincipal UserDetails usuario) {
 		Optional<Usuario> usuarioLogado = usuarioRepository.findByEmail(usuario.getUsername());
 		Optional<Produto> produto = produtoRepository.findById(id);
-		if(produto.isPresent()) {
+		if (produto.isPresent()) {
 			Produto oProduto = produto.get();
-			
-			if(oProduto.ehDono(usuarioLogado.get())) {
+
+			if (oProduto.ehDono(usuarioLogado.get())) {
 				List<String> linksImagem = mockServicoUpload.enviaImagens(form.getImagens());
 				oProduto.associaLinks(linksImagem);
-				
+
 				produtoRepository.save(oProduto);
 			} else {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -71,13 +72,13 @@ public class ProdutoController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ProdutoDto> encontraProdutoPorId(@PathVariable Long id) {
-		
+
 		Optional<Produto> produto = produtoRepository.findById(id);
-		
-		if(produto.isPresent()) {
+
+		if (produto.isPresent()) {
 			return ResponseEntity.ok(new ProdutoDto(produto.get()));
 		}
 		return ResponseEntity.notFound().build();

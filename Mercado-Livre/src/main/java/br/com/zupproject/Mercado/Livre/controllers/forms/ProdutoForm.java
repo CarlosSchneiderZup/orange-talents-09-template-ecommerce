@@ -35,28 +35,16 @@ public class ProdutoForm {
 	@IdFinder(domainClass = Categoria.class, fieldName = "id")
 	private Long idCategoria;
 
-	public String getNome() {
-		return nome;
-	}
-
-	public BigDecimal getValor() {
-		return valor;
-	}
-
-	public Integer getQuantidade() {
-		return quantidade;
-	}
-
-	public Map<String, String> getCaracteristicas() {
-		return caracteristicas;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public Long getIdCategoria() {
-		return idCategoria;
+	public ProdutoForm(@NotBlank String nome, @NotNull @Min(1) BigDecimal valor, @NotNull @Min(1) Integer quantidade,
+			@Size(min = 3) Map<String, String> caracteristicas, @NotBlank @Size(max = 1000) String descricao,
+			@NotNull Long idCategoria) {
+		super();
+		this.nome = nome;
+		this.valor = valor;
+		this.quantidade = quantidade;
+		this.caracteristicas = caracteristicas;
+		this.descricao = descricao;
+		this.idCategoria = idCategoria;
 	}
 
 	public Produto converter(CategoriaRepository categoriaRepository, Usuario dono) {
