@@ -10,6 +10,7 @@ import javax.persistence.ManyToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,32 +41,17 @@ public class Usuario implements UserDetails {
 
 	public Usuario(String email, String senha) {
 		this.email = email;
-		this.senha = senha;
+		this.senha = geraSenhaEncriptada(senha);
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(dataCadastro, email, id, perfis, senha);
+	private String geraSenhaEncriptada(String senha) {
+		BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+		return bcrypt.encode(senha);
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Usuario other = (Usuario) obj;
-		return Objects.equals(dataCadastro, other.dataCadastro) && Objects.equals(email, other.email)
-				&& Objects.equals(id, other.id) && Objects.equals(perfis, other.perfis)
-				&& Objects.equals(senha, other.senha);
-	}
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return perfis;

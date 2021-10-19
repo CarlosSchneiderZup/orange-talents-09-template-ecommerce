@@ -39,6 +39,8 @@ class ProdutoControllerTest {
 
 	private String uri = "/produtos";
 	private Produto produto;
+	private Categoria categoria;
+	private String token;
 	
 	private Gson gson = new Gson();
 
@@ -65,27 +67,33 @@ class ProdutoControllerTest {
 	
 	@BeforeEach
 	void setUp() {
-
-		Usuario usuarioLogado = new Usuario("usuario@email.com", "superSafePassword");
-		usuarioRepository.save(usuarioLogado);
 		
-		Categoria categoria = new Categoria("Pets", null);
+		Usuario usuarioLogado = new Usuario("usuario@email.com", "superSafePassword");
+		Usuario usuario = new Usuario("usuarioDono@email.com", "1234567");
+		usuarioRepository.save(usuarioLogado);
+		usuarioRepository.save(usuario);
+		
+		categoria = new Categoria("Pets", null);
 		categoriaRepository.save(categoria);
 
-		Usuario usuario = new Usuario("usuarioDono@email.com", "1234567");
-		usuarioRepository.save(usuario);
 		produto = new Produto("Coleira canina", BigDecimal.valueOf(19.90), 10, getCaracteristicas(), getDescricao(),
 				categoria, usuario);
 		produtoRepository.save(produto);
+		
+		LoginForm login = new LoginForm();
+		login.setEmail("usuario@email.com");
+		login.setSenha("superSafePassword");
+		token = tokenService.gerarToken(authenticationManager.authenticate(login.converter()));
 	}
-
+	
 	@Test
 	void deveRetornarUmProdutoDtoEStatus200ParaUmProdutoValido() throws Exception {
-
+System.out.println(produto.getId());
 		ProdutoDto produtoDto = new ProdutoDto(produto);
 		String response = mapper.writeValueAsString(produtoDto);
 
-		MockHttpServletRequestBuilder chamada = MockMvcRequestBuilders.get(uri.concat("/1"));
+		MockHttpServletRequestBuilder chamada = MockMvcRequestBuilders.get(uri.concat("/" + produto.getId()));
+		
 
 		mockMvc.perform(chamada).andExpect(MockMvcResultMatchers.status().is(200))
 				.andExpect(MockMvcResultMatchers.content().json(response));
@@ -103,15 +111,9 @@ class ProdutoControllerTest {
 
 	@Test
 	void deveCadastrarUmNovoProdutoERetornarStatus200() throws Exception {
-		
-		LoginForm login = new LoginForm();
-		login.setEmail("usuario@email.com");
-		login.setSenha("superSafePassword");
-		
-		String token = tokenService.gerarToken(authenticationManager.authenticate(login.converter()));
 
 		ProdutoForm novoProduto = new ProdutoForm("Saco de ração Three dogs", new BigDecimal(9500.0), 1,
-				getCaracteristicas(), "Acompanha de brinde uma bolinha", 1L);
+				getCaracteristicas(), "Acompanha de brinde uma bolinha", categoria.getId());
 		
 		mockMvc.perform(
 				MockMvcRequestBuilders.post(uri)
@@ -120,7 +122,78 @@ class ProdutoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(MockMvcResultMatchers.status().is(200));
 	}
+	
+	@Test
+	void naoDeveCadastrarUmNovoProdutoComIdDeCategoriaInvalidoERetornarStatus400() throws Exception {
 
+		ProdutoForm novoProduto = new ProdutoForm("Saco de ração Three dogs", new BigDecimal(9500.0), 1,
+				getCaracteristicas(), "Acompanha de brinde uma bolinha", 1000L);
+		
+		mockMvc.perform(
+				MockMvcRequestBuilders.post(uri)
+				.header("Authorization", "Bearer " + token)
+				.content(gson.toJson(novoProduto))
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().is(400));
+	}
+
+	
+	@Test
+	void naoDeveCadastrarUmNovoProdutoComPrecoZeradoERetornarStatus400() throws Exception {
+
+		ProdutoForm novoProduto = new ProdutoForm("Saco de ração Three dogs", new BigDecimal(00.0), 1,
+				getCaracteristicas(), "Acompanha de brinde uma bolinha", categoria.getId());
+		
+		mockMvc.perform(
+				MockMvcRequestBuilders.post(uri)
+				.header("Authorization", "Bearer " + token)
+				.content(gson.toJson(novoProduto))
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().is(400));
+	}
+	
+	@Test
+	void naoDeveCadastrarUmNovoProdutoComNomeNuloERetornarStatus400() throws Exception {
+
+		ProdutoForm novoProduto = new ProdutoForm(null, new BigDecimal(9500.0), 1,
+				getCaracteristicas(), "Acompanha de brinde uma bolinha", categoria.getId());
+		
+		mockMvc.perform(
+				MockMvcRequestBuilders.post(uri)
+				.header("Authorization", "Bearer " + token)
+				.content(gson.toJson(novoProduto))
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().is(400));
+	}
+	
+	@Test
+	void naoDeveCadastrarUmNovoProdutoComDescricaoMaiorQueMilCaracteresERetornarStatus400() throws Exception {
+
+		ProdutoForm novoProduto = new ProdutoForm("Saco de ração Three dogs", new BigDecimal(9500.0), 1,
+				getCaracteristicas(), getDescricaoGigante(), 1000L);
+		
+		mockMvc.perform(
+				MockMvcRequestBuilders.post(uri)
+				.header("Authorization", "Bearer " + token)
+				.content(gson.toJson(novoProduto))
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().is(400));
+	}
+	
+	@Test
+	void naoDeveCadastrarUmNovoProdutoComMenosDeTresCaracteristicasERetornarStatus400() throws Exception {
+
+		ProdutoForm novoProduto = new ProdutoForm("Saco de ração Three dogs", new BigDecimal(9500.0), 1,
+				getCaracteristicasInvalidas(), "Acompanha de brinde uma bolinha", 1000L);
+		
+		mockMvc.perform(
+				MockMvcRequestBuilders.post(uri)
+				.header("Authorization", "Bearer " + token)
+				.content(gson.toJson(novoProduto))
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().is(400));
+	}
+	
 	private Map<String, String> getCaracteristicas() {
 		Map<String, String> caracteristicas = new HashMap<>();
 		caracteristicas.put("Cor", "Verde");
@@ -129,9 +202,23 @@ class ProdutoControllerTest {
 		caracteristicas.put("Anti pulgas", "Não");
 		return caracteristicas;
 	}
+	
+	private Map<String, String> getCaracteristicasInvalidas() {
+		Map<String, String> caracteristicas = new HashMap<>();
+		caracteristicas.put("Garantia", "6 meses");
+		return caracteristicas;
+	}
 
 	private String getDescricao() {
 		return "Coleiras caninas com peitoral e duas argolas de metal para guia";
+	}
+	
+	private String getDescricaoGigante() {
+		String retorno = "XX";
+		retorno = retorno.replaceAll("X", "XXXXXXXXXX");
+		retorno = retorno.replaceAll("X", "XXXXXXXXXX");
+		retorno = retorno.replaceAll("X", "XXXXXXXXXX");
+		return retorno;
 	}
 
 }

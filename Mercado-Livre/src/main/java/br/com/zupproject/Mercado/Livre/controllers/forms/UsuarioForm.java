@@ -4,14 +4,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import br.com.zupproject.Mercado.Livre.commons.validators.UniqueValue;
 import br.com.zupproject.Mercado.Livre.entidades.Usuario;
 
 public class UsuarioForm {
-
-	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	@NotBlank
 	@Email
@@ -30,7 +26,6 @@ public class UsuarioForm {
 	}
 
 	public Usuario converter() {
-		String senhaSegura = encoder.encode(senha);
-		return new Usuario(email, senhaSegura);
+		return new Usuario(email, senha);
 	}
 }
